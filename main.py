@@ -77,7 +77,6 @@ def search_google(query, max_pages=float("inf")):
         headers = {
             # Use outdated user agent to disable infinite page reload
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.19042"
-            # "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15"
         }
         time.sleep(random.uniform(10, 20))
         response = requests.get(current_url, headers=headers, proxies=PROXY)
@@ -134,17 +133,6 @@ def download_and_search(urls):
             company_name = ""
             location = ""
             print(f'trying url: {url}')
-
-            # this uses javascript to render important data, I'll have to use selenium or something else if I want to pull this job data
-            # if 'talentnet.community' in url:
-            #         title = soup.find('meta', property='og:title')['content']
-            #         company_name = soup.find('meta', property='og:url')['content']
-            #         location = "remote"
-
-            # if 'remoteineurope.com' in url:
-            #     company_name = soup.select_one('h3.card-job-post-sidebar').get_text(strip=True)
-            #     title = soup.select_one('h1.card-job-post').get_text(strip=True)
-            #     location = "Remote"
             if 'jobs.ashbyhq.com' in url:
                 pass
             elif 'remoterocketship.com' in url:
@@ -284,16 +272,8 @@ def download_and_search(urls):
 
         except Exception as e:
             pass
-            # print(f"Error downloading {url}: {e}")
     return result_set
 
-
-
-################## SNIP
-import random
-import time
-import json
-import os
 
 CONF_FILE = 'fart.conf'
 
@@ -314,57 +294,6 @@ def get_next_sites(all_sites, last_used_sites, num_sites):
     selected_sites = random.sample(available_sites, num_sites)
     return selected_sites
 
-def generate_query(config):
-    all_sites = [
-        # "remoterocketship.com",
-        "myworkdayjobs.com",
-        "ocs.oraclecloud.com",
-        "dayforcehcm.com",
-        "softgarden.io",
-        "greenhouse.io",
-        "lever.co",
-        "www.wayup.com",
-        "applytojob.com"
-    ]
-
-    technologies = [
-        "frontend",
-        "web developer",
-        "next.js",
-        "nextjs",
-        "vuejs",
-        "vue.js",
-        "angular",
-    ]
-
-    
-    # Get next sites to use
-    num_sites = min(3, len(all_sites))
-    selected_sites = get_next_sites(all_sites, config["last_used_sites"], num_sites)
-    
-    # Update last_used_sites
-    config["last_used_sites"].extend(selected_sites)
-    if len(config["last_used_sites"]) >= len(all_sites):
-        config["last_used_sites"] = config["last_used_sites"][-len(all_sites):]
-    
-    # Randomly select technologies
-    selected_techs = random.sample(technologies, min(4, len(technologies)))
-    
-    # Generate a more natural language query
-    query = " | ".join([f"site:{site}" for site in selected_sites])
-    query += f" {' | '.join(selected_techs)}"
-    
-    # Use a broader, randomized date range
-    start_date = random.randint(25, 30)  # Random day in the last month
-    query += f" remote after:2024-{7}-{2}"
-    
-    return query, config
-
-def search_with_delay(query, num_results):
-    print(f'search query: {query}')
-    results = search_google(query, num_results)
-    time.sleep(random.uniform(2, 5))  # Random delay between requests
-    return results
 
 def main():
 
@@ -381,46 +310,3 @@ if __name__ == "__main__":
     cur.close()
     conn.close()
     os.system('python compatibility.py')
-
-
-
-
-
-
-
-# if __name__ == "__main__":
-#     query = (
-#             "site:remoterocketship.com | "
-#             "site:myworkdayjobs.com | "
-#             "site:ocs.oraclecloud.com | "
-#             "site:dayforcehcm.com | "
-#             "site:softgarden.io | "
-#             "site:greenhouse.io | "
-#             "site:lever.co | "
-#             "site:www.wayup.com | "
-#             "site:applytojob.com "
-#             "python | "
-#             "java | "
-#             "postgresql | "
-#             "react.js | "
-#             "next.js | "
-#             "node.js | "
-#             "linux | "
-#             "docker | "
-#             "kubernetes | "
-#             "terraform | "
-#             "jenkins | "
-#             "packer |"
-#             "serverless | "
-#             "lambda remote "
-#             "after:2024-7-7"
-#              )
-#     print(f'search query: {query}')
-#     all_results = search_google(query, 1000)
-#     matches = download_and_search(all_results)
-#     for match in matches:
-#         insert_job_data(match)
-#     cur.close()
-#     conn.close()
-#     # os.system('npx ts-node ./src/compat.ts')
-#     os.system('python compatibility.py')
